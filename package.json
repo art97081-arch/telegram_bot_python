@@ -4,7 +4,7 @@
   "description": "Telegram bot with SafeCheck, Tron, and Rapira integrations",
   "main": "dist/bot.js",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc --skipLibCheck",
     "start": "node dist/bot.js",
     "dev": "ts-node src/bot.ts",
     "watch": "nodemon --exec ts-node src/bot.ts",
