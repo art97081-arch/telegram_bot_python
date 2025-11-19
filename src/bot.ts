@@ -59,24 +59,39 @@ class SecurityBot {
   }
 
   private setupHealthCheck() {
+    console.log('🔧 Настройка HTTP сервера для healthcheck...');
+    
     // HTTP сервер для healthcheck Railway
     this.httpServer = http.createServer((req, res) => {
+      console.log(`📡 HTTP запрос: ${req.method} ${req.url}`);
+      
       if (req.url === '/health') {
-        res.writeHead(200, { 'Content-Type': 'application/json' });
-        res.end(JSON.stringify({ 
+        const response = { 
           status: 'ok', 
           timestamp: new Date().toISOString(),
-          uptime: process.uptime()
-        }));
+          uptime: process.uptime(),
+          botToken: process.env.BOT_TOKEN ? 'set' : 'missing'
+        };
+        
+        res.writeHead(200, { 'Content-Type': 'application/json' });
+        res.end(JSON.stringify(response));
+        console.log('✅ Healthcheck ответ отправлен');
       } else {
         res.writeHead(404, { 'Content-Type': 'text/plain' });
         res.end('Not Found');
+        console.log('❌ 404 - путь не найден');
       }
     });
 
     const port = process.env.PORT || 3000;
-    this.httpServer.listen(port, () => {
+    
+    this.httpServer.on('error', (error) => {
+      console.error('❌ HTTP сервер ошибка:', error);
+    });
+    
+    this.httpServer.listen(Number(port), '0.0.0.0', () => {
       console.log(`🌐 HTTP сервер запущен на порту ${port}`);
+      console.log(`🔗 Healthcheck: http://localhost:${port}/health`);
     });
   }
 
