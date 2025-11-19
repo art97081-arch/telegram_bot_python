@@ -36,9 +36,11 @@ class SecurityBot {
     // ВАЖНО: Запускаем HTTP сервер сначала для healthcheck Railway
     this.setupHealthCheck();
     
-    const token = process.env.BOT_TOKEN;
-    if (!token) {
-      console.error('❌ BOT_TOKEN не установлен в переменных окружения');
+    const token = process.env.BOT_TOKEN?.trim();
+    console.log(`🔍 BOT_TOKEN проверка: ${token ? 'найден' : 'отсутствует'} (длина: ${token?.length || 0})`);
+    
+    if (!token || token.length < 10) {
+      console.error('❌ BOT_TOKEN не установлен или некорректен в переменных окружения');
       console.log('🌐 HTTP сервер работает на /health для Railway healthcheck');
       console.log('🔧 Настройте BOT_TOKEN в Environment Variables');
       
@@ -52,6 +54,7 @@ class SecurityBot {
       return;
     }
 
+    console.log('✅ BOT_TOKEN найден, инициализирую бота...');
     this.bot = new Telegraf(token);
     this.setupMiddleware();
     this.setupCommands();
