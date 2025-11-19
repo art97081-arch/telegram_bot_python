@@ -8,7 +8,8 @@
     "start": "node dist/bot.js",
     "dev": "ts-node src/bot.ts",
     "watch": "nodemon --exec ts-node src/bot.ts",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist",
+    "postinstall": "npm run build"
   },
   "keywords": [
     "telegram",
