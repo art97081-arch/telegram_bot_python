@@ -1,11 +1,11 @@
 {
   "build": {
-    "builder": "NIXPACKS",
-    "buildCommand": "npm ci --omit=dev && npm run build"
+    "builder": "NIXPACKS"
   },
   "deploy": {
     "startCommand": "npm start",
     "healthcheckPath": "/health",
-    "healthcheckTimeout": 300
+    "healthcheckTimeout": 300,
+    "restartPolicyType": "on_failure"
   }
 }
