@@ -33,16 +33,29 @@ class SecurityBot {
   private httpServer?: http.Server;
 
   constructor() {
+    // ВАЖНО: Запускаем HTTP сервер сначала для healthcheck Railway
+    this.setupHealthCheck();
+    
     const token = process.env.BOT_TOKEN;
     if (!token) {
-      throw new Error('BOT_TOKEN не установлен в переменных окружения');
+      console.error('❌ BOT_TOKEN не установлен в переменных окружения');
+      console.log('🌐 HTTP сервер работает на /health для Railway healthcheck');
+      console.log('🔧 Настройте BOT_TOKEN в Environment Variables');
+      
+      // Создаем временный бот чтобы избежать crash
+      this.bot = new Telegraf('dummy_token');
+      
+      // Запускаем только HTTP сервер
+      setInterval(() => {
+        console.log('⏰ Жду BOT_TOKEN...');
+      }, 30000);
+      return;
     }
 
     this.bot = new Telegraf(token);
     this.setupMiddleware();
     this.setupCommands();
     this.setupErrorHandling();
-    this.setupHealthCheck();
   }
 
   private setupHealthCheck() {
